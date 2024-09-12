@@ -1,10 +1,57 @@
-mport turtle
-def draw_art():
-    window = turtle.Screen()
-    tenlines = turtle.Turtle()
-    tenlines.shape("arrow")
-    tenlines.color("blue")
-    for i in range(1,37):
-        tenlines.right(10)
-        tenlines.circle(100)
-draw_art()
+#!/usr/bin/python3 
+ 
+# заводим стек: 
+stack = [] 
+pop_stack = lambda stack, idx : stack.pop(idx) if 0 <= idx and idx < len(stack) else 0 
+ 
+# крутим цикл, в котором ждём от пользователя ввод 
+# и интерпретируем ввод в зависимости от обстоятельств: 
+while True: 
+ 
+    print("Содержимое стека:") 
+    if len(stack) == 0 : print("стек пуст") 
+    for (idx, value) in enumerate(stack) : 
+        print(f"[{idx}] = {value}" + (" <- результат последнего вычисления" if idx == 0 else "")) 
+ 
+    op = input("Введите число или команду (q - выход, h - помощь): ") 
+ 
+    match op : 
+ 
+        case "q" : break 
+ 
+        case "+" : 
+            stack = [pop_stack(stack,1) + pop_stack(stack,0)] + stack 
+ 
+        case "-" : 
+            stack = [pop_stack(stack,1) - pop_stack(stack,0)] + stack 
+ 
+        case "*" : 
+            stack = [pop_stack(stack,1) * pop_stack(stack,0)] + stack 
+ 
+        case "/" : 
+            if len(stack) == 0 or stack[0] == 0 : 
+                print("деление на ноль!") 
+                continue 
+            stack = [pop_stack(stack,1) / pop_stack(stack,0)] + stack 
+ 
+        case "h" : 
+            print("") 
+            print("    Справка:") 
+            print("    ~~~~~~~~") 
+            print("    Поддерживаются операции +, -, *, /") 
+            print("    Операции действуют на два верхних операнда в стеке") 
+            print("    Например, деление (/):") 
+            print("    При делении из стека извлекаются два верхних операнда...:") 
+            print("       [0] = A") 
+            print("       [1] = B") 
+            print("       [2] = ...") 
+            print("    ... и результат деления помещается в стек:") 
+            print("       [0] = B/A") 
+            print("       [1] = ...") 
+            print("") 
+ 
+        case _   : 
+            try : 
+                stack = [float(op)] + stack 
+            except : 
+                pass
